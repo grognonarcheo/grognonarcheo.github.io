@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<krpano version="1.19">
+
+    
+  <!-- Spot Style - Hotspot Web -->
+  <style name="IconHotspotWeb"
+         url="%FIRSTXML%/spots/hotspot_animated_user_defaultpoint0.png"
+         visible="false"
+         frame="0"
+         lastframe="19"
+         framewidth="64"
+         frameheight="64"
+         stopspotsequence="false"
+         crop="0|0|64|64"
+         onloaded="startspotanimation(0.1);"
+         onhover="onhoverIconHotspotWeb"
+         onout="onoutIconHotspotWeb"
+
+
+         />
+
+  <action name="onhoverIconHotspotWeb">
+    showtooltip('hotspot');
+  </action>
+
+
+  <action name="onoutIconHotspotWeb">
+    hideTooltip();
+
+
+
+  </action>
+
+
+
+<!-- ********** -->
+<!-- Lecteur de site Internet -->
+<!-- id : websiteViewer -->
+<!-- ********** -->
+
+<ptplugin name="websiteViewer" engine="kolorBox">
+	<settings>
+		<option name="position" value="center" type="string" />
+		<option name="margin_x" value="0" type="int" />
+		<option name="margin_y" value="0" type="int" />
+		<option name="external_padding" value="15" type="int" />
+		<option name="draggable_box" value="false" type="bool" />
+		<option name="container_auto_size" value="true" type="bool" />
+		<option name="container_width" value="100" type="int" />
+		<option name="container_width_unit" value="percent" type="string" />
+		<option name="container_height" value="100" type="int" />
+		<option name="container_height_unit" value="percent" type="string" />
+		<option name="container_color" value="ffffff" type="string" />
+		<option name="container_alpha" value="0.80000000000000004" type="float" />
+		<option name="container_topleft_border_radius" value="15" type="int" />
+		<option name="container_topright_border_radius" value="15" type="int" />
+		<option name="container_bottomleft_border_radius" value="15" type="int" />
+		<option name="container_bottomright_border_radius" value="15" type="int" />
+		<option name="container_border_width" value="0" type="int" />
+		<option name="container_border_color" value="ffffff" type="string" />
+		<option name="container_border_alpha" value="1" type="float" />
+		<option name="overlay_displayed" value="false" type="bool" />
+		<option name="overlay_color" value="000000" type="string" />
+		<option name="overlay_alpha" value="0.50000762951094835" type="float" />
+
+		<option name="title_displayed" value="false" type="bool" />
+		<option name="title_position" value="top" type="string" />
+		<option name="title_font" value="Verdana" type="string" />
+		<option name="title_size" value="14" type="int" />
+		<option name="title_weight" value="normal" type="string" />
+		<option name="title_style" value="normal" type="string" />
+		<option name="title_decoration" value="none" type="string" />
+		<option name="title_color" value="000000" type="string" />
+		<option name="caption_displayed" value="false" type="bool" />
+		<option name="iframe_scrolling" value="auto" type="string" />
+		<option name="iframe_default_width" value="1100" type="int" />
+		<option name="iframe_default_height" value="800" type="int" />
+		<option name="iframe_devices_width" value="1100" type="int" />
+		<option name="iframe_devices_height" value="800" type="int" />
+		<option name="force_ios_scrolling" value="true" type="bool" />
+		<option name="fullscreen_displayed" value="true" type="bool" />
+		<option name="fullscreen_position" value="topleft" type="string" />
+		<option name="fullscreen_text" value="websiteViewerfullscreen_text" type="string" />
+
+
+
+
+		<option name="close_displayed" value="true" type="bool" />
+		<option name="close_position" value="topright" type="string" />
+		<option name="close_text" value="websiteViewerclose_text" type="string" />
+
+		<option name="close_callback" value="invokeKrFunction('closeKolorBoxCallback_websiteViewer')" type="string" />
+		<option name="zorder" value="1" type="int" />
+		<option name="use_i18n" value="true" type="bool" />
+	</settings>
+	<internaldata>
+		
+	</internaldata>
+</ptplugin>
+
+<action name="kolorBoxJsReady_websiteViewer">
+	set(ptplugin[websiteViewer].jsready, true);
+</action>
+
+<action name="openWebsite_websiteViewer">
+	ifnot(ptplugin[websiteViewer].isOpen,
+		set(ptplugin[websiteViewer].isOpen, true);
+		set(ptplugin[websiteViewer].doNotDeleteMe, false);
+		getmessage(websiteViewer_boxurl, %1);
+		txtadd(websiteViewer_boxurl, ?iframe=true);
+		pauseautorotation(forceplugin);
+
+		js(invokePluginFunction(websiteViewer, loadSingleArrayItem, get(websiteViewer_boxurl), %2));
+		events.dispatch(onremovedisplayedobject);
+	,
+		if('%1' != websiteViewer_boxurl,
+			closeKolorBox_websiteViewer();
+			delayedcall(0.3,openWebsite_websiteViewer(%1,%2););
+		);
+	);
+</action>
+
+<action name="toggleWebsite_websiteViewer">
+	js(invokePluginFunction(websiteViewer, toggleKolorBox, %1));
+</action>
+
+
+<action name="closeKolorBox_websiteViewer">
+	js(invokePluginFunction(websiteViewer, closeKolorBox));
+</action>
+
+<action name="closeKolorBoxCallback_websiteViewer">
+	resumeautorotation(forceplugin);
+
+	set(ptplugin[websiteViewer].isOpen, false);
+</action>
+
+<action name="changeLanguage_websiteViewer">
+	if(ptplugin[websiteViewer].jsready,
+		stopdelayedcall(delay_websiteViewer);
+		js(invokePluginFunction(websiteViewer, changeLanguage));
+	,
+		delayedcall(delay_websiteViewer, 0.1, changeLanguage_websiteViewer(););
+	);
+</action>
+
+<events name="kolorBoxEvents_websiteViewer" 
+	keep="true"
+	changetourlanguage="changeLanguage_websiteViewer();"
+	/>
+
+<!-- ********** -->
+<!-- Sketchfab -->
+<!-- id : websiteViewer1 -->
+<!-- ********** -->
+
+<ptplugin name="websiteViewer1" engine="kolorBox">
+	<settings>
+		<option name="position" value="center" type="string" />
+		<option name="margin_x" value="0" type="int" />
+		<option name="margin_y" value="0" type="int" />
+		<option name="external_padding" value="15" type="int" />
+		<option name="draggable_box" value="false" type="bool" />
+		<option name="container_auto_size" value="false" type="bool" />
+		<option name="container_width" value="50" type="int" />
+		<option name="container_width_unit" value="percent" type="string" />
+		<option name="container_height" value="50" type="int" />
+		<option name="container_height_unit" value="percent" type="string" />
+		<option name="container_color" value="ffffff" type="string" />
+		<option name="container_alpha" value="0.80000000000000004" type="float" />
+		<option name="container_topleft_border_radius" value="15" type="int" />
+		<option name="container_topright_border_radius" value="15" type="int" />
+		<option name="container_bottomleft_border_radius" value="15" type="int" />
+		<option name="container_bottomright_border_radius" value="15" type="int" />
+		<option name="container_border_width" value="0" type="int" />
+		<option name="container_border_color" value="ffffff" type="string" />
+		<option name="container_border_alpha" value="1" type="float" />
+		<option name="overlay_displayed" value="false" type="bool" />
+		<option name="overlay_color" value="000000" type="string" />
+		<option name="overlay_alpha" value="0.50000762951094835" type="float" />
+
+		<option name="title_displayed" value="false" type="bool" />
+		<option name="title_position" value="top" type="string" />
+		<option name="title_font" value="Verdana" type="string" />
+		<option name="title_size" value="14" type="int" />
+		<option name="title_weight" value="normal" type="string" />
+		<option name="title_style" value="normal" type="string" />
+		<option name="title_decoration" value="none" type="string" />
+		<option name="title_color" value="000000" type="string" />
+		<option name="caption_displayed" value="false" type="bool" />
+		<option name="iframe_scrolling" value="auto" type="string" />
+		<option name="iframe_default_width" value="1100" type="int" />
+		<option name="iframe_default_height" value="800" type="int" />
+		<option name="iframe_devices_width" value="1100" type="int" />
+		<option name="iframe_devices_height" value="800" type="int" />
+		<option name="force_ios_scrolling" value="true" type="bool" />
+		<option name="fullscreen_displayed" value="true" type="bool" />
+		<option name="fullscreen_position" value="topleft" type="string" />
+		<option name="fullscreen_text" value="websiteViewer1fullscreen_text" type="string" />
+
+
+
+
+		<option name="close_displayed" value="true" type="bool" />
+		<option name="close_position" value="topright" type="string" />
+		<option name="close_text" value="websiteViewer1close_text" type="string" />
+
+		<option name="close_callback" value="invokeKrFunction('closeKolorBoxCallback_websiteViewer1')" type="string" />
+		<option name="zorder" value="2" type="int" />
+		<option name="use_i18n" value="true" type="bool" />
+	</settings>
+	<internaldata>
+		
+	</internaldata>
+</ptplugin>
+
+<action name="kolorBoxJsReady_websiteViewer1">
+	set(ptplugin[websiteViewer1].jsready, true);
+</action>
+
+<action name="openWebsite_websiteViewer1">
+	ifnot(ptplugin[websiteViewer1].isOpen,
+		set(ptplugin[websiteViewer1].isOpen, true);
+		set(ptplugin[websiteViewer1].doNotDeleteMe, false);
+		getmessage(websiteViewer1_boxurl, %1);
+		txtadd(websiteViewer1_boxurl, ?iframe=true);
+		pauseautorotation(forceplugin);
+
+		js(invokePluginFunction(websiteViewer1, loadSingleArrayItem, get(websiteViewer1_boxurl), %2));
+		events.dispatch(onremovedisplayedobject);
+	,
+		if('%1' != websiteViewer1_boxurl,
+			closeKolorBox_websiteViewer1();
+			delayedcall(0.3,openWebsite_websiteViewer1(%1,%2););
+		);
+	);
+</action>
+
+<action name="toggleWebsite_websiteViewer1">
+	js(invokePluginFunction(websiteViewer1, toggleKolorBox, %1));
+</action>
+
+
+<action name="closeKolorBox_websiteViewer1">
+	js(invokePluginFunction(websiteViewer1, closeKolorBox));
+</action>
+
+<action name="closeKolorBoxCallback_websiteViewer1">
+	resumeautorotation(forceplugin);
+
+	set(ptplugin[websiteViewer1].isOpen, false);
+</action>
+
+<action name="changeLanguage_websiteViewer1">
+	if(ptplugin[websiteViewer1].jsready,
+		stopdelayedcall(delay_websiteViewer1);
+		js(invokePluginFunction(websiteViewer1, changeLanguage));
+	,
+		delayedcall(delay_websiteViewer1, 0.1, changeLanguage_websiteViewer1(););
+	);
+</action>
+
+<events name="kolorBoxEvents_websiteViewer1" 
+	keep="true"
+	changetourlanguage="changeLanguage_websiteViewer1();"
+	/>
+
+<!-- ********** -->
+<!-- Lecteur de site Internet2 -->
+<!-- id : websiteViewer2 -->
+<!-- ********** -->
+
+<ptplugin name="websiteViewer2" engine="kolorBox">
+	<settings>
+		<option name="position" value="center" type="string" />
+		<option name="margin_x" value="0" type="int" />
+		<option name="margin_y" value="0" type="int" />
+		<option name="external_padding" value="15" type="int" />
+		<option name="draggable_box" value="false" type="bool" />
+		<option name="container_auto_size" value="true" type="bool" />
+		<option name="container_width" value="100" type="int" />
+		<option name="container_width_unit" value="percent" type="string" />
+		<option name="container_height" value="100" type="int" />
+		<option name="container_height_unit" value="percent" type="string" />
+		<option name="container_color" value="ffffff" type="string" />
+		<option name="container_alpha" value="0.80000000000000004" type="float" />
+		<option name="container_topleft_border_radius" value="15" type="int" />
+		<option name="container_topright_border_radius" value="15" type="int" />
+		<option name="container_bottomleft_border_radius" value="15" type="int" />
+		<option name="container_bottomright_border_radius" value="15" type="int" />
+		<option name="container_border_width" value="0" type="int" />
+		<option name="container_border_color" value="ffffff" type="string" />
+		<option name="container_border_alpha" value="1" type="float" />
+		<option name="overlay_displayed" value="false" type="bool" />
+		<option name="overlay_color" value="000000" type="string" />
+		<option name="overlay_alpha" value="0.50000762951094835" type="float" />
+
+		<option name="title_displayed" value="false" type="bool" />
+		<option name="title_position" value="top" type="string" />
+		<option name="title_font" value="Verdana" type="string" />
+		<option name="title_size" value="14" type="int" />
+		<option name="title_weight" value="normal" type="string" />
+		<option name="title_style" value="normal" type="string" />
+		<option name="title_decoration" value="none" type="string" />
+		<option name="title_color" value="000000" type="string" />
+		<option name="caption_displayed" value="false" type="bool" />
+		<option name="iframe_scrolling" value="auto" type="string" />
+		<option name="iframe_default_width" value="1100" type="int" />
+		<option name="iframe_default_height" value="800" type="int" />
+		<option name="iframe_devices_width" value="1100" type="int" />
+		<option name="iframe_devices_height" value="800" type="int" />
+		<option name="force_ios_scrolling" value="true" type="bool" />
+		<option name="fullscreen_displayed" value="true" type="bool" />
+		<option name="fullscreen_position" value="topleft" type="string" />
+		<option name="fullscreen_text" value="websiteViewer2fullscreen_text" type="string" />
+
+
+
+
+		<option name="close_displayed" value="true" type="bool" />
+		<option name="close_position" value="topright" type="string" />
+		<option name="close_text" value="websiteViewer2close_text" type="string" />
+
+		<option name="close_callback" value="invokeKrFunction('closeKolorBoxCallback_websiteViewer2')" type="string" />
+		<option name="zorder" value="3" type="int" />
+		<option name="use_i18n" value="true" type="bool" />
+	</settings>
+	<internaldata>
+		
+	</internaldata>
+</ptplugin>
+
+<action name="kolorBoxJsReady_websiteViewer2">
+	set(ptplugin[websiteViewer2].jsready, true);
+</action>
+
+<action name="openWebsite_websiteViewer2">
+	ifnot(ptplugin[websiteViewer2].isOpen,
+		set(ptplugin[websiteViewer2].isOpen, true);
+		set(ptplugin[websiteViewer2].doNotDeleteMe, false);
+		getmessage(websiteViewer2_boxurl, %1);
+		txtadd(websiteViewer2_boxurl, ?iframe=true);
+		pauseautorotation(forceplugin);
+
+		js(invokePluginFunction(websiteViewer2, loadSingleArrayItem, get(websiteViewer2_boxurl), %2));
+		events.dispatch(onremovedisplayedobject);
+	,
+		if('%1' != websiteViewer2_boxurl,
+			closeKolorBox_websiteViewer2();
+			delayedcall(0.3,openWebsite_websiteViewer2(%1,%2););
+		);
+	);
+</action>
+
+<action name="toggleWebsite_websiteViewer2">
+	js(invokePluginFunction(websiteViewer2, toggleKolorBox, %1));
+</action>
+
+
+<action name="closeKolorBox_websiteViewer2">
+	js(invokePluginFunction(websiteViewer2, closeKolorBox));
+</action>
+
+<action name="closeKolorBoxCallback_websiteViewer2">
+	resumeautorotation(forceplugin);
+
+	set(ptplugin[websiteViewer2].isOpen, false);
+</action>
+
+<action name="changeLanguage_websiteViewer2">
+	if(ptplugin[websiteViewer2].jsready,
+		stopdelayedcall(delay_websiteViewer2);
+		js(invokePluginFunction(websiteViewer2, changeLanguage));
+	,
+		delayedcall(delay_websiteViewer2, 0.1, changeLanguage_websiteViewer2(););
+	);
+</action>
+
+<events name="kolorBoxEvents_websiteViewer2" 
+	keep="true"
+	changetourlanguage="changeLanguage_websiteViewer2();"
+	/>
+
+<!-- ********** -->
+<!-- Lecteur de site Internet3 -->
+<!-- id : websiteViewer3 -->
+<!-- ********** -->
+
+<ptplugin name="websiteViewer3" engine="kolorBox">
+	<settings>
+		<option name="position" value="center" type="string" />
+		<option name="margin_x" value="0" type="int" />
+		<option name="margin_y" value="0" type="int" />
+		<option name="external_padding" value="15" type="int" />
+		<option name="draggable_box" value="false" type="bool" />
+		<option name="container_auto_size" value="false" type="bool" />
+		<option name="container_width" value="100" type="int" />
+		<option name="container_width_unit" value="percent" type="string" />
+		<option name="container_height" value="100" type="int" />
+		<option name="container_height_unit" value="percent" type="string" />
+		<option name="container_color" value="ffffff" type="string" />
+		<option name="container_alpha" value="0.80000000000000004" type="float" />
+		<option name="container_topleft_border_radius" value="15" type="int" />
+		<option name="container_topright_border_radius" value="15" type="int" />
+		<option name="container_bottomleft_border_radius" value="15" type="int" />
+		<option name="container_bottomright_border_radius" value="15" type="int" />
+		<option name="container_border_width" value="0" type="int" />
+		<option name="container_border_color" value="ffffff" type="string" />
+		<option name="container_border_alpha" value="1" type="float" />
+		<option name="overlay_displayed" value="false" type="bool" />
+		<option name="overlay_color" value="000000" type="string" />
+		<option name="overlay_alpha" value="0.50000762951094835" type="float" />
+
+		<option name="title_displayed" value="false" type="bool" />
+		<option name="title_position" value="top" type="string" />
+		<option name="title_font" value="Verdana" type="string" />
+		<option name="title_size" value="14" type="int" />
+		<option name="title_weight" value="normal" type="string" />
+		<option name="title_style" value="normal" type="string" />
+		<option name="title_decoration" value="none" type="string" />
+		<option name="title_color" value="000000" type="string" />
+		<option name="caption_displayed" value="false" type="bool" />
+		<option name="iframe_scrolling" value="auto" type="string" />
+		<option name="iframe_default_width" value="1100" type="int" />
+		<option name="iframe_default_height" value="800" type="int" />
+		<option name="iframe_devices_width" value="1100" type="int" />
+		<option name="iframe_devices_height" value="800" type="int" />
+		<option name="force_ios_scrolling" value="true" type="bool" />
+		<option name="fullscreen_displayed" value="true" type="bool" />
+		<option name="fullscreen_position" value="topleft" type="string" />
+		<option name="fullscreen_text" value="websiteViewer3fullscreen_text" type="string" />
+
+
+
+
+		<option name="close_displayed" value="true" type="bool" />
+		<option name="close_position" value="topright" type="string" />
+		<option name="close_text" value="websiteViewer3close_text" type="string" />
+
+		<option name="close_callback" value="invokeKrFunction('closeKolorBoxCallback_websiteViewer3')" type="string" />
+		<option name="zorder" value="4" type="int" />
+		<option name="use_i18n" value="true" type="bool" />
+	</settings>
+	<internaldata>
+		
+	</internaldata>
+</ptplugin>
+
+<action name="kolorBoxJsReady_websiteViewer3">
+	set(ptplugin[websiteViewer3].jsready, true);
+</action>
+
+<action name="openWebsite_websiteViewer3">
+	ifnot(ptplugin[websiteViewer3].isOpen,
+		set(ptplugin[websiteViewer3].isOpen, true);
+		set(ptplugin[websiteViewer3].doNotDeleteMe, false);
+		getmessage(websiteViewer3_boxurl, %1);
+		txtadd(websiteViewer3_boxurl, ?iframe=true);
+		pauseautorotation(forceplugin);
+
+		js(invokePluginFunction(websiteViewer3, loadSingleArrayItem, get(websiteViewer3_boxurl), %2));
+		events.dispatch(onremovedisplayedobject);
+	,
+		if('%1' != websiteViewer3_boxurl,
+			closeKolorBox_websiteViewer3();
+			delayedcall(0.3,openWebsite_websiteViewer3(%1,%2););
+		);
+	);
+</action>
+
+<action name="toggleWebsite_websiteViewer3">
+	js(invokePluginFunction(websiteViewer3, toggleKolorBox, %1));
+</action>
+
+
+<action name="closeKolorBox_websiteViewer3">
+	js(invokePluginFunction(websiteViewer3, closeKolorBox));
+</action>
+
+<action name="closeKolorBoxCallback_websiteViewer3">
+	resumeautorotation(forceplugin);
+
+	set(ptplugin[websiteViewer3].isOpen, false);
+</action>
+
+<action name="changeLanguage_websiteViewer3">
+	if(ptplugin[websiteViewer3].jsready,
+		stopdelayedcall(delay_websiteViewer3);
+		js(invokePluginFunction(websiteViewer3, changeLanguage));
+	,
+		delayedcall(delay_websiteViewer3, 0.1, changeLanguage_websiteViewer3(););
+	);
+</action>
+
+<events name="kolorBoxEvents_websiteViewer3" 
+	keep="true"
+	changetourlanguage="changeLanguage_websiteViewer3();"
+	/>
+
+</krpano>
